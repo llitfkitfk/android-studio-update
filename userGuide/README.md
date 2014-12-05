@@ -1,11 +1,11 @@
 Gradle Plugin User Guide
 =====================
 
-1. [Introduction](#introduction)
+1. [Introduction](#introduction-)
 	1. Goals of the new Build System 
 	2. Why Gradle?
-2. [Requirements](#requirements)
-3. [Basic Project](#basic-project)
+2. [Requirements](#requirements-)
+3. [Basic Project](#basic-project-)
 	1. Simple build files
 	2. Project Structure
 		1. Configuring the Structure 
@@ -19,7 +19,7 @@ Gradle Plugin User Guide
 		3. Signing Configurations
 		4. Running ProGuard
 
-4. [Dependencies, Android Libraries and Multi-project setup](#dependencies-android-libraries-and-multi-project-setup)
+4. [Dependencies, Android Libraries and Multi-project setup](#dependencies-android-libraries-and-multi-project-setup-)
 	1. Dependencies on binary packages
 		1. Local packages
 		2. Remote artifacts
@@ -29,7 +29,7 @@ Gradle Plugin User Guide
 		2. Differences between a Project and a Library Project
 		3. Referencing a Library
 		4. Library Publication
-5. [Testing](#testing)
+5. [Testing](#testing-)
 	1. Basics and Configuration
 	2. Running tests
 	3. Testing Android Libraries
@@ -37,7 +37,7 @@ Gradle Plugin User Guide
 		1. Single projects
 		2. Multi-projects reports
 	5. Lint support
-6. [Build Variants](#build-variants)
+6. [Build Variants](#build-variants-)
 	1. Product flavors
 	2. Build Type + Product Flavor = Build Variant
 	3. Product Flavor Configuration
@@ -45,7 +45,7 @@ Gradle Plugin User Guide
 	5. Building and Tasks
 	6. Testing
 	7. Multi-flavor variants
-7. [Advanced Build Customization](#advanced-build-customization)
+7. [Advanced Build Customization](#advanced-build-customization-)
 	1. Build options
 		1. Java Compilation options
 		2. aapt options
@@ -68,29 +68,56 @@ This documentation is for the Gradle plugin version 0.9. Earlier versions may di
 ##Goals of the new Build System
 
 The goals of the new build system are:
-Make it easy to reuse code and resources
-Make it easy to create several variants of an application, either for multi-apk distribution or for different flavors of an application
-Make it easy to configure, extend and customize the build process
-Good IDE integration
+
+* Make it easy to reuse code and resources
+* Make it easy to create several variants of an application, either for multi-apk distribution or for different flavors of an application
+* Make it easy to configure, extend and customize the build process
+* Good IDE integration
+
+```
+新构造系统的目标:
+-> 方便复用代码和资源
+-> 方便创建不同的应用，多包分布式或者是不同风格的应用
+-> 方便配置，扩展以及自定义构造过程
+-> 良好的IDE集成
+```
 
 ##Why Gradle?
 
 Gradle is an advanced build system as well as an advanced build toolkit allowing to create custom build logic through plugins.
 
-Here are some of its features that made us choose Gradle:
-Domain Specific Language (DSL) to describe and manipulate the build logic
-Build files are Groovy based and allow mixing of declarative elements through the DSL and using code to manipulate the DSL elements to provide custom logic.
-Built-in dependency management through Maven and/or Ivy.
-Very flexible. Allows using best practices but doesn’t force its own way of doing things.
-Plugins can expose their own DSL and their own API for build files to use.
-Good Tooling API allowing IDE integration
+```
+Gradle时一种先进的构建系统，同时也是先进的构建工具包，允许用户通过插件来创建自定义的构建逻辑
+```
 
+Here are some of its features that made us choose Gradle:
+
+* Domain Specific Language (DSL) to describe and manipulate the build logic
+* Build files are Groovy based and allow mixing of declarative elements through the DSL and using code to manipulate the DSL elements to provide custom logic.
+* Built-in dependency management through Maven and/or Ivy.
+* Very flexible. Allows using best practices but doesn’t force its own way of doing things.
+* Plugins can expose their own DSL and their own API for build files to use.
+* Good Tooling API allowing IDE integration
+
+```
+下面是让我们选择Gradle的一些功能：
+-> 领域特定语言(DSL)用来描述和操作构建逻辑 
+-> 构建文件是基于Groovy的，允许通过DSL混合声明的元素以及使用代码来操作DSL元素并提供自定义的逻辑
+-> 通过 Maven 以及/或者 Ivy 内置依赖管理
+-> 非常灵活，允许用户使用最佳实践并不强制Gradle统一的方式
+-> 良好的工具API允许IDE集成
+```
 
 #Requirements [\^](#gradle-plugin-user-guide)
 
-Gradle 1.10 or 1.11 or 1.12 with the plugin 0.11.1
-SDK with Build Tools 19.0.0. Some features may require a more recent version.
+* Gradle 1.10 or 1.11 or 1.12 with the plugin 0.11.1
+* SDK with Build Tools 19.0.0. Some features may require a more recent version.
 
+```
+-> 插件版本是0.11.1的 Gradle 1.10 或者1.11 或者1.12，
+-> 构建工具是19.0.0的SDK. 一些功能可能需要较新的版本
+
+```
 
 #Basic Project [\^](#gradle-plugin-user-guide)
 
