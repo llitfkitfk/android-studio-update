@@ -1,7 +1,7 @@
 Gradle Plugin User Guide
 =====================
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 	1. Goals of the new Build System 
 	2. Why Gradle?
 2. Requirements
