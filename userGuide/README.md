@@ -59,3 +59,45 @@ Gradle Plugin User Guide
 #Introduction
 
 This documentation is for the Gradle plugin version 0.9. Earlier versions may differ due to non-compatible we are introducing before 1.0.
+
+```
+这个文档的gradle 插件版本是0.9
+在1.0版本之前的早期版本因为不兼容可能会有些不同
+```
+
+##Goals of the new Build System
+
+The goals of the new build system are:
+Make it easy to reuse code and resources
+Make it easy to create several variants of an application, either for multi-apk distribution or for different flavors of an application
+Make it easy to configure, extend and customize the build process
+Good IDE integration
+
+##Why Gradle?
+
+Gradle is an advanced build system as well as an advanced build toolkit allowing to create custom build logic through plugins.
+
+Here are some of its features that made us choose Gradle:
+Domain Specific Language (DSL) to describe and manipulate the build logic
+Build files are Groovy based and allow mixing of declarative elements through the DSL and using code to manipulate the DSL elements to provide custom logic.
+Built-in dependency management through Maven and/or Ivy.
+Very flexible. Allows using best practices but doesn’t force its own way of doing things.
+Plugins can expose their own DSL and their own API for build files to use.
+Good Tooling API allowing IDE integration
+
+
+#Requirements
+
+Gradle 1.10 or 1.11 or 1.12 with the plugin 0.11.1
+SDK with Build Tools 19.0.0. Some features may require a more recent version.
+
+
+#Basic Project
+
+#Dependencies, Android Libraries and Multi-project setup
+
+#Testing
+
+#Build Variants
+
+#Advanced Build Customization

@@ -14,6 +14,15 @@ android-studio-update
 
 
 
+###译者
+
+####llitfkitfk  
+
+&nbsp;&nbsp;&nbsp;**Email** - llitfkitfk@gmail.com
+
+&nbsp;&nbsp;&nbsp;**QQ** - 281196448
+
+&nbsp;&nbsp;&nbsp;**Website** - htian.info
 
 ###贡献
 欢迎发送PR，我会第一时间修改
