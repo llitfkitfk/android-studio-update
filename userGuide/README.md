@@ -10,9 +10,9 @@ Gradle Plugin User Guide
 	2. [Project Structure](#project-structure-)
 		1. [Configuring the Structure](#configuring-the-structure-) 
 	3. [Build Tasks](#build-tasks-)
-		1. General Tasks 
-		2. Java project tasks
-		3. Android tasks
+		1. [General Tasks](#general-tasks-) 
+		2. [Java project tasks](#java-project-tasks-)
+		3. [Android tasks](#android-tasks-)
 	4. [Basic Build Customization](#basic-build-customization-)
 		1. Manifest entries
 		2. Build Types
@@ -355,7 +355,7 @@ The ‘migrated’ sample shows this.
 
 ##Build Tasks [\^](#gradle-plugin-user-guide)
 
-###General Tasks
+###General Tasks [\^](#gradle-plugin-user-guide)
 
 Applying a plugin to the build file automatically creates a set of build tasks to run. Both the Java plugin and the Android plugin do this.
 The convention for tasks is the following:
@@ -426,7 +426,7 @@ Running the build twice without change will make Gradle report all tasks as UP-T
 这使得任务可以正确的依赖彼此，而无需不必要的构建操作。
 ```
 
-###Java project tasks
+###Java project tasks [\^](#gradle-plugin-user-guide)
 
 The Java plugin creates mainly two tasks, that are dependencies of the main anchor tasks:
 
@@ -465,7 +465,7 @@ You can see the full set of tasks and their descriptions for the Java plugin [he
 ```
 [点击这里](http://gradle.org/docs/current/userguide/java_plugin.html)
 
-###Android tasks
+###Android tasks [\^](#gradle-plugin-user-guide)
 
 The Android plugin use the same convention to stay compatible with other plugins, and adds an additional anchor task:
 
