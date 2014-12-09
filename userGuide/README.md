@@ -342,10 +342,10 @@ android {
 This is Android specific and will not work on Java sourceSets.
 
 ```
--> 注意：因为旧的项目结构把所有的源文件(java, aidl, render script和 java resources)放在同一个文件夹里，所以用户需要重新映射所有sourceSet的新组件到相同的src文件夹
+-> 注意：因为旧的项目结构把所有的源文件(java, aidl, render script和 java resources)放在同一个文件夹里，所以用户需要重新映射所有sourceSet的新组件到相同的src文件夹。
 
--> 注意：setRoot() 移动所有的sourceSet(以及它的子文件夹)到新的文件夹里，
-上面例子里是移动 src/androidTest/* 到 tests/*。
+-> 注意：setRoot() 移动所有的sourceSet(以及它的子文件夹)到新的文件夹里，上面例子里是移动 src/androidTest/* 到 tests/*。
+
 -> 这是android项目的具体配置，对于Java项目sourceSets不起作用
 ```
 
