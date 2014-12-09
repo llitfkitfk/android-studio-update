@@ -8,7 +8,7 @@ Gradle Plugin User Guide
 3. [Basic Project](#basic-project-)
 	1. [Simple build files](#simple-build-files-)
 	2. [Project Structure](#project-structure-)
-		1. Configuring the Structure 
+		1. [Configuring the Structure](#configuring-the-structure-) 
 	3. [Build Tasks](#build-tasks-)
 		1. General Tasks 
 		2. Java project tasks
@@ -354,6 +354,227 @@ The ‘migrated’ sample shows this.
 
 
 ##Build Tasks [\^](#gradle-plugin-user-guide)
+
+###General Tasks
+
+Applying a plugin to the build file automatically creates a set of build tasks to run. Both the Java plugin and the Android plugin do this.
+The convention for tasks is the following:
+
+```
+应用插件来自动创建一系列的构建任务。Java插件和Android插件都可以做到。
+构建任务的规定如下：
+```
+
+* assemble
+	* The task to assemble the output(s) of the project
+* check
+	* The task to run all the checks.
+* build
+	* This task does both assemble and check
+* clean
+	* This task cleans the output of the project
+
+```
+-> assemble	－组装项目输出的任务
+-> check		－运行所有检查的任务
+-> build			－做以上两种任务的任务
+-> clean		－清除项目输出的任务
+```
+
+The tasks assemble, check and build don’t actually do anything. They are anchor tasks for the plugins to add actual tasks that do the work.
+
+```
+组装，检查以及构建任务实际上并不做任何事。
+它们的功能是让插件添加实际的任务来工作。
+```
+
+This allows you to always call the same task(s) no matter what the type of project is, or what plugins are applied.
+For instance, applying the findbugs plugin will create a new task and make check depend on it, making it be called whenever the check task is called.
+
+
+```
+这可以使用户用相同的任务不管是什么类型的项目或者用什么类型的插件。
+比如说，应用findbugs插件将创建新的任务并检查依赖，使得它被调用每当检查任务被调用
+```
+
+From the command line you can get the high level task running the following command:
+
+```
+以下的命令用户可以获得高级别的任务：
+```
+
+```
+gradle tasks
+```
+
+For a full list and seeing dependencies between the tasks run:
+
+```
+展示任务之间依赖的全部列表：
+```
+
+```
+gradle tasks --all
+```
+
+**Note:** Gradle automatically monitor the declared inputs and outputs of a task.
+Running the build twice without change will make Gradle report all tasks as UP-TO-DATE, meaning no work was required. This allows tasks to properly depend on each other without requiring unneeded build operations.
+
+```
+注意：Gradle自动监视任务声明的输入的输出。
+没有变化的运行构建两次会使Gradle报告所有的任务是最新的(UP-TO-DATE),这意味着没有需要的多余工作。
+这使得任务可以正确的依赖彼此，而无需不必要的构建操作。
+```
+
+###Java project tasks
+
+The Java plugin creates mainly two tasks, that are dependencies of the main anchor tasks:
+
+```
+Java插件主要创建两个任务：
+```
+
+* assemble
+	* jar
+		* This task creates the output.
+* check
+	* test
+		* This task runs the tests.
+
+```
+-> assemble	－jar	－创建输出的任务
+-> check		－test	－运行测试的任务
+```
+
+The jar task itself will depend directly and indirectly on other tasks: classes for instance will compile the Java code.
+The tests are compiled with testClasses, but it is rarely useful to call this as test depends on it (as well as classes).
+
+In general, you will probably only ever call assemble or check, and ignore the other tasks.
+
+```
+jar任务自身会直接或者间接一览其他的任务：类的实例将编译java代码。
+//TODO
+这些测试用testClasses编译，但是它几乎是没用的来调用此作为测试依赖类
+一般情况下，用户可能只能调用组装活着检查，而忽略了其他任务
+```
+
+You can see the full set of tasks and their descriptions for the Java plugin [here](http://gradle.org/docs/current/userguide/java_plugin.html).
+
+```
+用户可以看到Java插件的全套任务及其说明
+```
+[点击这里](http://gradle.org/docs/current/userguide/java_plugin.html)
+
+###Android tasks
+
+The Android plugin use the same convention to stay compatible with other plugins, and adds an additional anchor task:
+
+* assemble
+	* The task to assemble the output(s) of the project
+* check
+	* The task to run all the checks.
+* connectedCheck
+	* Runs checks that requires a connected device or emulator. they will run on all connected devices in parallel.
+* deviceCheck
+	* Runs checks using APIs to connect to remote devices. This is used on CI servers.
+* build
+	* This task does both assemble and check
+* clean
+	* This task cleans the output of the project
+
+```
+Android插件使用相同的规定来保持与其他插件的兼容，并且增加了一个额外的任务：
+
+-> assemble		－组装项目输出任务
+-> check			－检查任务
+-> connectedCheck	－检查需要一个连接设备或者模拟器。它们可以并行运行在所有连接的设备上。
+-> deviceCheck 	－检查连接使用APIs的远程设备。这通常在CI服务上使用。
+-> build				－做组装和检查的任务
+-> clean			－清除项目输出的任务
+```
+
+The new anchor tasks are necessary in order to be able to run regular checks without needing a connected device.
+Note that build does not depend on deviceCheck, or connectedCheck.
+
+```
+新的任务是必要的，以便能够无需连接设备就能运行定期检查。
+需要注意的是构建不依赖于deviceCheck，或connectedCheck。
+```
+
+An Android project has at least two outputs: a debug APK and a release APK. Each of these has its own anchor task to facilitate building them separately:
+
+* assemble
+	* assembleDebug
+	* assembleRelease
+
+```
+一个android项目至少有两个输出：一个调试APK和一个正式APK。
+每一种都有自己的任务，以便它们单独构建：
+
+-> assemble	
+	1. assembleDebug
+	2. assembleRelease
+```
+
+They both depend on other tasks that execute the multiple steps needed to build an APK. The assemble task depends on both, so calling it will build both APKs.
+
+```
+它们都取决于构建APK需要执行多个步骤的其他任务。
+该组装任务取决于双方，所以它会同时生成APK。
+```
+
+Tip: Gradle support camel case shortcuts for task names on the command line. For instance:
+
+```
+提示：Gradle命令行支持camel case快捷方式。
+例如：
+```
+
+```
+gradle aR
+```
+
+is the same as typing
+
+```
+跟下面这个命令一样：
+```
+
+```
+gradle assembleRelease
+```
+
+as long as no other task match ‘aR’
+
+```
+只要没有其他任务匹配到‘aR’
+```
+
+The check anchor tasks have their own dependencies:
+
+* check
+	* lint
+* connectedCheck
+	* connectedAndroidTest
+	* connectedUiAutomatorTest (not implemented yet)
+* deviceCheck
+	* This depends on tasks created when other plugins implement test extension points.
+
+```
+检查任务有它自己的依赖：
+
+-> check 	－lint
+-> connectedCheck	
+	－connectedAndroidTest
+	－connectedUiAutomatorTest (not implemented yet)
+-> deviceCheck	－这取决于当其他插件实现测试扩展点时创建的任务
+```
+Finally, the plugin creates install/uninstall tasks for all build types (debug, release, test), as long as they can be installed (which requires signing).
+
+```
+最后，插件创建所有构建类型(debug, release, test)的安装/卸载任务，只要它们能安装(这需要签字)。
+```
+
 
 ##Basic Build Customization [\^](#gradle-plugin-user-guide)
 
