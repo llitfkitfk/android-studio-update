@@ -309,7 +309,8 @@ For more information, see the Gradle documentation on the Java plugin [here](htt
 
 ```
 更多详情，请查阅Gradle文档的java插件
-``` [点击这里](http://gradle.org/docs/current/userguide/java_plugin.html)
+``` 
+[点击这里](http://gradle.org/docs/current/userguide/java_plugin.html)
 
 The Android plugin uses a similar syntaxes, but because it uses its own sourceSets, this is done within the android object.
 Here’s an example, using the old project structure for the main code and remapping the androidTest sourceSet to the tests folder:
