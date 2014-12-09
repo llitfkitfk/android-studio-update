@@ -6,14 +6,14 @@ Gradle Plugin User Guide
 	2. [Why Gradle?](#why-gradle-)
 2. [Requirements](#requirements-)
 3. [Basic Project](#basic-project-)
-	1. Simple build files
-	2. Project Structure
+	1. [Simple build files](#simple-build-files-)
+	2. [Project Structure](#project-structure-)
 		1. Configuring the Structure 
-	3. Build Tasks
+	3. [Build Tasks](#build-tasks-)
 		1. General Tasks 
 		2. Java project tasks
 		3. Android tasks
-	4. Basic Build Customization
+	4. [Basic Build Customization](#basic-build-customization-)
 		1. Manifest entries
 		2. Build Types
 		3. Signing Configurations
@@ -211,6 +211,146 @@ Alternatively, you can set an environment variable called **ANDROID_HOME**. Ther
 ```
 
 ##Project Structure [\^](#gradle-plugin-user-guide)
+
+The basic build files above expect a default folder structure. Gradle follows the concept of convention over configuration, providing sensible default option values when possible.
+
+```
+上述的基本构建文件时默认的文件夹结构。Gradle遵循常规优于配置，提供合理的默认选项的理念
+
+```
+
+The basic project starts with two components called “source sets”. The main source code and the test code. These live respectively in:
+
+```
+基本项目始于两部分：“source sets”。主代码和测试代码，分别放置在如下位置：
+```
+
+```
+src/main/
+src/androidTest/
+```
+
+Inside each of these folders exists folder for each source components.
+For both the Java and Android plugin, the location of the Java source code and the Java resources:
+
+```
+里面的每一个文件夹都有源代码组件的文件夹
+对于java和android插件，源代码与资源文件都保存在下边两个位置里：
+```
+
+```
+java/
+resources/
+```
+
+For the Android plugin, extra files and folders specific to Android:
+
+```
+对于android插件，额外的文件和文件夹具体是下边这些：
+```
+
+```
+AndroidManifest.xml
+res/
+assets/
+aidl/
+rs/
+jni/
+```
+
+**Note:** ```src/androidTest/AndroidManifest.xml``` is not needed as it is created automatically.
+
+```
+注意：src/androidTest/AndroidManifest.xml 虽然自动创建了，但是是不需要的
+```
+
+###Configuring the Structure [\^](#gradle-plugin-user-guide)
+
+When the default project structure isn’t adequate, it is possible to configure it. According to the Gradle documentation, reconfiguring the sourceSets for a Java project can be done with the following:
+
+```
+当默认的项目结构不足够以应对需求时，也可以添加配置。根据 Gradle文档，重新配置java项目的sourceSets可以通过以下来实现：
+```
+
+```
+sourceSets {
+    main {
+        java {
+            srcDir 'src/java'
+        }
+        resources {
+            srcDir 'src/resources'
+        }
+    }
+}
+```
+
+**Note:** srcDir will actually add the given folder to the existing list of source folders (this is not mentioned in the Gradle documentation but this is actually the behavior).
+
+```
+注意：srcDir 将会添加给定的文件夹到已经存在的源文件夹的列表里(在Gradle文档里并没有提到，但是这确实是个事实)
+```
+
+To replace the default source folders, you will want to use srcDirs instead, which takes an array of path. This also shows a different way of using the objects involved:
+
+```
+要替代默认的源文件夹，用户可以配置srcDirs(参数是路径数组)来实现，这里展示了不同的实现方式：
+```
+
+```
+sourceSets {
+    main.java.srcDirs = ['src/java']
+    main.resources.srcDirs = ['src/resources']
+}
+```
+
+
+For more information, see the Gradle documentation on the Java plugin [here](http://gradle.org/docs/current/userguide/java_plugin.html).
+
+```
+更多详情，请查阅Gradle文档的java插件
+```[点击这里](http://gradle.org/docs/current/userguide/java_plugin.html)
+
+The Android plugin uses a similar syntaxes, but because it uses its own sourceSets, this is done within the android object.
+Here’s an example, using the old project structure for the main code and remapping the androidTest sourceSet to the tests folder:
+
+```
+Android插件使用类似的语法，但是因为它使用自己的 sourceSets,这是Android项目的使用方式。
+下面的举例，使用旧的项目结构的main code重新映射androidTest	的sourceSet到tests文件夹
+```
+
+```
+android {
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+	androidTest.setRoot('tests')  
+    }
+}
+```
+
+**Note:** because the old structure put all source files (java, aidl, renderscript, and java resources) in the same folder, we need to remap all those new components of the sourceSet to the same src folder.
+
+**Note:** setRoot() moves the whole sourceSet (and its sub folders) to a new folder. This moves src/androidTest/* to tests/*
+This is Android specific and will not work on Java sourceSets.
+
+```
+-> 注意：因为旧的项目结构把所有的源文件(java, aidl, render script和 java resources)放在同一个文件夹里，所以用户需要重新映射所有sourceSet的新组件到相同的src文件夹
+
+-> 注意：setRoot() 移动所有的sourceSet(以及它的子文件夹)到新的文件夹里，
+上面例子里是移动 src/androidTest/* 到 tests/*。
+-> 这是android项目的具体配置，对于Java项目sourceSets不起作用
+```
+
+The ‘migrated’ sample shows this.
+
 
 ##Build Tasks [\^](#gradle-plugin-user-guide)
 
