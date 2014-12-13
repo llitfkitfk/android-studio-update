@@ -578,7 +578,332 @@ Finally, the plugin creates install/uninstall tasks for all build types (debug, 
 
 ##Basic Build Customization [\^](#gradle-plugin-user-guide)
 
+The Android plugin provides a broad DSL to customize most things directly from the build system.
+
+###Manifest entries [\^](#gradle-plugin-user-guide)
+
+Through the DSL it is possible to configure the following manifest entries:
+
+* minSdkVersion
+* targetSdkVersion
+* versionCode
+* versionName
+* applicationId (the effective packageName -- see [ApplicationId versus PackageName](http://tools.android.com/tech-docs/new-build-system/applicationid-vs-packagename) for more information)
+* Package Name for the test application
+* Instrumentation test runner
+
+Example:
+
+```
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.0"
+
+    defaultConfig {
+        versionCode 12
+        versionName "2.0"
+        minSdkVersion 16
+        targetSdkVersion 16
+    }
+}
+```
+
+The defaultConfig element inside the android element is where all this configuration is defined.
+
+Previous versions of the Android Plugin used packageName to configure the manifest 'packageName' attribute.
+Starting in 0.11.0, you should use applicationId in the build.gradle to configure the manifest 'packageName' entry.
+This was disambiguated to reduce confusion between the application's packageName (which is its ID) and 
+java packages.
+
+The power of describing it in the build file is that it can be dynamic.
+For instance, one could be reading the version name from a file somewhere or using some custom logic:
+
+```
+def computeVersionName() {
+    ...
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.0"
+
+    defaultConfig {
+        versionCode 12
+        versionName computeVersionName()
+        minSdkVersion 16
+        targetSdkVersion 16
+    }
+}
+```
+**Note:** Do not use function names that could conflict with existing getters in the given scope. For instance instance defaultConfig { ...} calling getVersionName() will automatically use the getter of defaultConfig.getVersionName() instead of the custom method.
+
+If a property is not set through the DSL, some default value will be used. Here’s a table of how this is processed.
+
+| Property Name | Default value in DSL object	 | Default value
+|:------:|:----------:|:----------:
+| versionCode |  -1	  | value from manifest if present
+| versionName | 	 null	  | value from manifest if present
+| minSdkVersion | 	 -1	  | value from manifest if present
+| targetSdkVersion | 	 -1	  | value from manifest if present
+| applicationId | 	 null	  | value from manifest if present
+| testApplicationId | 	 null	  | applicationId + “.test”
+| testInstrumentationRunner | 	 null  | android.test.InstrumentationTestRunner
+|  signingConfig | 	 null	  | null
+|  proguardFile | 	 N/A (set only)	  | N/A (set only)
+|  proguardFiles	 |  N/A (set only)	  | N/A (set only)
+
+The value of the 2nd column is important if you use custom logic in the build script that queries these properties. For instance, you could write:
+
+```
+if (android.defaultConfig.testInstrumentationRunner == null) {
+    // assign a better default...
+}
+```
+
+If the value remains null, then it is replaced at build time by the actual default from column 3, but the DSL element does not contain this default value so you can't query against it.
+This is to prevent parsing the manifest of the application unless it’s really needed. 
+
+
+###Build Types
+
+By default, the Android plugin automatically sets up the project to build both a debug and a release version of the application.
+
+These differ mostly around the ability to debug the application on a secure (non dev) devices, and how the APK is signed.
+
+The debug version is signed with a key/certificate that is created automatically with a known name/password (to prevent required prompt during the build). The release is not signed during the build, this needs to happen after.
+
+This configuration is done through an object called a BuildType. By default, 2 instances are created, a debug and a release one.
+
+The Android plugin allows customizing those two instances as well as creating other Build Types. This is done with the buildTypes DSL container:
+
+```
+android {
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+        }
+
+        jnidebug.initWith(buildTypes.debug)
+        jnidebug {
+            packageNameSuffix ".jnidebug"
+            jniDebuggable true
+        }
+    }
+}
+```
+The above snippet achieves the following:
+
+* Configures the default debug Build Type:
+	* set its package to be <app appliationId>.debug to be able to install both debug and release apk on the same device
+* Creates a new BuildType called jnidebug and configure it to be a copy of the debug build type.
+* Keep configuring the jnidebug, by enabling debug build of the JNI component, and add a different package suffix.
+Creating new Build Types is as easy as using a new element under the buildTypes container, either to call initWith() or to configure it with a closure.
+
+The possible properties and their default values are:
+
+| Property Name | Default value for debug	 | Default value for release / other
+|:------:|:----------:|:----------:
+| debuggable	| true	| false
+| jniDebuggable	 | false	| false
+| renderscriptDebuggable	| false	| false
+| renderscriptOptimLevel	| 3	| 3
+| applicationIdSuffix	 | null	| null
+| versionNameSuffix	| null	| null
+| signingConfig	| android.signingConfigs.debug	| null
+| zipAlignEnabled	| false	| true
+| minifyEnabled	 | false	| false
+| proguardFile	| N/A (set only)	| N/A (set only)
+| proguardFiles	| N/A (set only)	| N/A (set only)
+ 
+In addition to these properties, Build Types can contribute to the build with code and resources.
+
+For each Build Type, a new matching sourceSet is created, with a default location of
+
+```
+src/<buildtypename>/
+```
+
+This means the Build Type names cannot be main or androidTest (this is enforced by the plugin), and that they have to be unique to each other.
+
+Like any other source sets, the location of the build type source set can be relocated:
+
+```
+android {
+    sourceSets.jnidebug.setRoot('foo/jnidebug')
+}
+```
+
+Additionally, for each Build Type, a new assemble<BuildTypeName> task is created.
+
+The assembleDebug and assembleRelease tasks have already been mentioned, and this is where they come from. When the debug and release Build Types are pre-created, their tasks are automatically created as well.
+
+The build.gradle snippet above would then also generate an assembleJnidebug task, and assemble would be made to depend on it the same way it depends on the assembleDebug and assembleRelease tasks.
+
+Tip: remember that you can type gradle aJ to run the assembleJnidebug task.
+
+Possible use case:
+
+* Permissions in debug mode only, but not in release mode
+* Custom implementation for debugging
+* Different resources for debug mode (for instance when a resource value is tied to the signing certificate).
+
+The code/resources of the BuildType are used in the following way:
+
+* The manifest is merged into the app manifest
+* The code acts as just another source folder
+* The resources are overlayed over the main resources, replacing existing values.
+
+###Signing Configurations [\^](#gradle-plugin-user-guide)
+
+Signing an application requires the following:
+
+* A keystore
+* A keystore password
+* A key alias name
+* A key password
+* The store type
+
+The location, as well as the key name, both passwords and store type form together a Signing Configuration (type SigningConfig)
+
+By default, there is a debug configuration that is setup to use a debug keystore, with a known password and a default key with a known password.
+The debug keystore is located in $HOME/.android/debug.keystore, and is created if not present.
+
+The debug Build Type is set to use this debug SigningConfig automatically.
+
+It is possible to create other configurations or customize the default built-in one. This is done through the signingConfigs DSL container:
+
+```
+android {
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+
+        myConfig {
+            storeFile file("other.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    buildTypes {
+        foo {
+            debuggable true
+            jniDebuggable true
+            signingConfig signingConfigs.myConfig
+        }
+    }
+}
+```
+
+The above snippet changes the location of the debug keystore to be at the root of the project. This automatically impacts any Build Types that are set to using it, in this case the debug Build Type.
+
+It also creates a new Signing Config and a new Build Type that uses the new configuration.
+
+**Note:** Only debug keystores located in the default location will be automatically created. Changing the location of the debug keystore will not create it on-demand. Creating a SigningConfig with a different name that uses the default debug keystore location will create it automatically. In other words, it’s tied to the location of the keystore, not the name of the configuration.
+
+**Note:** Location of keystores are usually relative to the root of the project, but could be absolute paths, thought it is not recommended (except for the debug one since it is automatically created).
+
+**Note:** If you are checking these files into version control, you may not want the password in the file. The following Stack Overflow post shows ways to read the values from the console, or from environment variables.
+[how to create release signed apk](http://stackoverflow.com/questions/18328730/how-to-create-a-release-signed-apk-file-using-gradle)
+We'll update this guide with more detailed information later.
+
+###Running ProGuard [\^](#gradle-plugin-user-guide)
+
+ProGuard is supported through the Gradle plugin for ProGuard version 4.10. The ProGuard plugin is applied automatically, and the tasks are created automatically if the Build Type is configured to run ProGuard through the minifyEnabled property.
+
+```
+android {
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+        }
+    }
+
+    productFlavors {
+        flavor1 {
+        }
+        flavor2 {
+            proguardFile 'some-other-rules.txt'
+        }
+    }
+}
+```
+
+Variants use all the rules files declared in their build type, and product flavors.
+
+There are 2 default rules files
+
+* proguard-android.txt
+* proguard-android-optimize.txt
+
+They are located in the SDK. Using getDefaultProguardFile() will return the full path to the files. They are identical except for enabling optimizations.
+
 #Dependencies, Android Libraries and Multi-project setup [\^](#gradle-plugin-user-guide)
+
+Gradle projects can have dependencies on other components. These components can be external binary packages, or other Gradle projects.
+
+##Dependencies on binary packages [\^](#gradle-plugin-user-guide)
+
+###Local packages [\^](#gradle-plugin-user-guide)
+
+To configure a dependency on an external library jar, you need to add a dependency on the compile configuration.
+
+```
+dependencies {
+    compile files('libs/foo.jar')
+}
+
+android {
+    ...
+}
+```
+
+**Note:** the dependencies DSL element is part of the standard Gradle API and does not belong inside the android element.
+
+The compile configuration is used to compile the main application. Everything in it is added to the compilation classpath and also packaged in the final APK.
+
+There are other possible configurations to add dependencies to:
+
+* compile: main application
+* androidTestCompile: test application
+* debugCompile: debug Build Type
+* releaseCompile: release Build Type.
+
+Because it’s not possible to build an APK that does not have an associated Build Type, the APK is always configured with two (or more) configurations: compile and <buildtype>Compile.
+
+Creating a new Build Type automatically creates a new configuration based on its name.
+
+This can be useful if the debug version needs to use a custom library (to report crashes for instance), while the release doesn’t, or if they rely on different versions of the same library.
+
+###Remote artifacts [\^](#gradle-plugin-user-guide)
+
+Gradle supports pulling artifacts from Maven and Ivy repositories.
+
+First the repository must be added to the list, and then the dependency must be declared in a way that Maven or Ivy declare their artifacts.
+
+```
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    compile 'com.google.guava:guava:11.0.2'
+}
+
+android {
+    ...
+}
+```
+
+**Note:** mavenCentral() is a shortcut to specifying the URL of the repository. Gradle supports both remote and local repositories.
+
+**Note:** Gradle will follow all dependencies transitively. This means that if a dependency has dependencies of its own, those are pulled in as well.
+
+For more information about setting up dependencies, read the Gradle user guide [here](http://gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html), and DSL documentation [here](http://gradle.org/docs/current/dsl/org.gradle.api.artifacts.dsl.DependencyHandler.html).
 
 #Testing [\^](#gradle-plugin-user-guide)
 
