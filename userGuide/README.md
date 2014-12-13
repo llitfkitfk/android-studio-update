@@ -14,15 +14,15 @@ Gradle Plugin User Guide
 		2. [Java project tasks](#java-project-tasks-)
 		3. [Android tasks](#android-tasks-)
 	4. [Basic Build Customization](#basic-build-customization-)
-		1. Manifest entries
-		2. Build Types
-		3. Signing Configurations
-		4. Running ProGuard
+		1. [Manifest entries](#manifest-entries-)
+		2. [Build Types](#build-types-)
+		3. [Signing Configurations](#signing-configurations-)
+		4. [Running ProGuard](#running-proguard-)
 
 4. [Dependencies, Android Libraries and Multi-project setup](#dependencies-android-libraries-and-multi-project-setup-)
-	1. Dependencies on binary packages
-		1. Local packages
-		2. Remote artifacts
+	1. [Dependencies on binary packages](#dependencies-on-binary-packages-)
+		1. [Local packages](#local-packages-)
+		2. [Remote artifacts](#remote-artifacts-)
 	2. Multi project setup
 	3. Library projects
 		1. Creating a Library Project
@@ -664,7 +664,7 @@ If the value remains null, then it is replaced at build time by the actual defau
 This is to prevent parsing the manifest of the application unless it’s really needed. 
 
 
-###Build Types
+###Build Types [\^](#gradle-plugin-user-guide)
 
 By default, the Android plugin automatically sets up the project to build both a debug and a release version of the application.
 
