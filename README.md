@@ -8,6 +8,7 @@ Android Studio Update
 |:------:|:----------:
 | Go 将支持 Android NDK | [Goooooo](https://github.com/llitfkitfk/android-studio-update/blob/master/go-article)
 | Gradle Plugin 用户指南 | [Yoooooo](https://github.com/llitfkitfk/android-studio-update/blob/master/userGuide)
+| Android Studio 1.0.2 Released | [GOTO](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-1.0.2.md)
 | Android Studio 1.0.1 Released | [GOTO](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-1.0.1.md)
 | Android Studio 1.0 Released | [GOTO](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-1.0.md)
 | Android Studio 1.0 RC 4 | [GOTO](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-rc4.md)
