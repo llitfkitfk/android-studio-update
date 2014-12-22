@@ -13,6 +13,9 @@ Android Studio Update
 | Android Studio 1.0 Released | [GOTO](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-1.0.md)
 | Android Studio 1.0 RC 4 | [GOTO](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-rc4.md)
 | Android Studio 1.0 RC 3 | [GOTO](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-rc3.md)
+| Android vs IOS | [GOTO](https://github.com/llitfkitfk/android-studio-update/blob/master/asVSxcode.md)
+
+
 
 
 
