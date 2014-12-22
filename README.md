@@ -28,7 +28,7 @@ Android Studio Update
 
 &nbsp;&nbsp;&nbsp;**QQ** - 281196448
 
-&nbsp;&nbsp;&nbsp;**Website** - htian.info
+&nbsp;&nbsp;&nbsp;**Website** - [htian.info](http://htian.info)
 
 ###贡献
 欢迎发送PR，我会第一时间修改
