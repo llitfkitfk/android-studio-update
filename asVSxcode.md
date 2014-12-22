@@ -1,6 +1,8 @@
 Android  VS IOS
 =============
 
+[C#快速教程for Java开发](https://github.com/xfans/Csharp_java_book)
+
 ##语法
 
 | Java | Swift
