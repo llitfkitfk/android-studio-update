@@ -1,7 +1,7 @@
 Android Studio Update
 =====================
 
-###android studio 更新日志
+##android studio 更新日志
 
 | 版本 | 更新内容
 |:------:|:----------:
@@ -15,19 +15,11 @@ Android Studio Update
 | Android Studio 0.1.3 Released | [Jun 6, 2013](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-0.1.3.md)
 | Android Studio Preview Released | [May 23, 2013](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-pr.md)
 
-
----------
-
-###Android与IOS的对比 (针对android程序猿)
+##Android与IOS的对比 (针对android程序猿)
 
 * [传送门](https://github.com/llitfkitfk/android-studio-update/blob/master/asVSxcode.md)
 
-
-
----------
-
-
-###译者
+##我
 
 ####llitfkitfk  
 
@@ -37,6 +29,5 @@ Android Studio Update
 
 &nbsp;&nbsp;&nbsp;**Website** - [htian.info](http://htian.info)
 
-------------
-###贡献
+##贡献
 欢迎发送PR，我会第一时间修改
