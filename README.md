@@ -12,6 +12,7 @@ Android Studio Update
 | Android Studio 1.0 Released | [Dec 8, 2014](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-1.0.md)
 | Android Studio 1.0 RC 4 | [Dec 4, 2014](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-rc4.md)
 | Android Studio 1.0 RC 3 | [Dec 4, 2014](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-rc3.md)
+| Android Studio 0.1.5 Released | [Jun 14, 2013](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-0.1.5.md)
 | Android Studio 0.1.3 Released | [Jun 6, 2013](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-0.1.3.md)
 | Android Studio Preview Released | [May 23, 2013](https://github.com/llitfkitfk/android-studio-update/blob/master/as-recent-pr.md)
 
